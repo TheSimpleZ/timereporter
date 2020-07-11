@@ -1,0 +1,19 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build_runner watch",
+      "type": "shell",
+      "command": "flutter pub run build_runner watch",
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": [
+        "$dart-pub-build_runner"
+      ],
+      "isBackground": true
+    }
+  ]
+}
