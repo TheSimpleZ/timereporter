@@ -14,7 +14,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'hooks/useSharedPrefs.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 
-part 'NormalTimeForm.g.dart';
+part 'normalTimeForm.g.dart';
 
 const portName = "BackgroundSignal";
 
@@ -65,8 +65,13 @@ Future<void> backgroundJob() async {
   final storage = FlutterSecureStorage();
   final password = jsonDecode(await storage.read(key: passwordKey));
 
-  await sendTimeReport(
+  final response = await sendTimeReport(
       username, password, workOrder, activity, hoursPerDay, timesheetIsReady);
+
+  if (response.statusCode == 200)
+    notify("Timereporter", "Successfully reported time for this week!");
+  else
+    notify("Timereporter", "Failed to report time for this week!");
 }
 
 @hwidget
@@ -87,17 +92,19 @@ Widget normalTimeForm(BuildContext context) {
       usePersistentTextEditingController(hoursPerDayKey, useSharedPrefs);
 
   sendTimeReportNow() async {
-    final response = await sendTimeReport(
-        username.text,
-        password.text,
-        workOrder.text,
-        activity.text,
-        hoursPerDay.text,
-        timesheetIsReady.value);
-    if (response.statusCode == 200)
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success!')));
-    else
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error!')));
+    if (_formKey.currentState.validate()) {
+      final response = await sendTimeReport(
+          username.text,
+          password.text,
+          workOrder.text,
+          activity.text,
+          hoursPerDay.text,
+          timesheetIsReady.value);
+      if (response.statusCode == 200)
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success!')));
+      else
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error!')));
+    }
   }
 
   useEffect(() {
@@ -114,22 +121,22 @@ Widget normalTimeForm(BuildContext context) {
     hoursPerDay.text = "";
     autoTimeReport.value = false;
     timesheetIsReady.value = false;
-
-    notify();
   }
 
   toggleAutoSwitch(newValue) async {
     if (newValue) {
-      final startTime = DateTime.now().add(const Duration(minutes: 1));
-      AndroidAlarmManager.periodic(
-        const Duration(days: 7),
-        0,
-        backgroundJob,
-        startAt: startTime,
-        exact: true,
-        wakeup: true,
-        rescheduleOnReboot: true,
-      );
+      if (_formKey.currentState.validate()) {
+        final startTime = DateTime.now().next(DateTime.thursday);
+        AndroidAlarmManager.periodic(
+          const Duration(days: 7),
+          0,
+          backgroundJob,
+          startAt: startTime,
+          exact: true,
+          wakeup: true,
+          rescheduleOnReboot: true,
+        );
+      }
     } else {
       AndroidAlarmManager.cancel(0);
     }

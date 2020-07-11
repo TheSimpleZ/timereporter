@@ -15,10 +15,10 @@ initPlugin() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
-Future notify() async {
+Future notify(String message, String description) async {
   var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      'your channel id', 'your channel name', 'your channel description',
-      importance: Importance.Max, priority: Priority.High);
+      'timereporter', 'Time report', 'Notifications regarding time reporting',
+      importance: Importance.High, priority: Priority.High);
 
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
@@ -27,8 +27,8 @@ Future notify() async {
 
   await flutterLocalNotificationsPlugin.show(
     0,
-    'New Post',
-    'How to Show Notification in Flutter',
+    message,
+    description,
     platformChannelSpecifics,
     payload: 'Default_Sound',
   );
