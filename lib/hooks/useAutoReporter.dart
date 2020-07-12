@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timereporter/hooks/useSharedPrefs.dart';
+import '../hooks/useSharedPrefs.dart';
 import '../notifications.dart';
 import '../services/timereport-api.dart';
 import '../constants.dart';
@@ -42,7 +43,7 @@ Future<void> backgroundJob() async {
     notify("Timereporter", "Failed to report time for this week!");
 }
 
-Function(bool) useAutoReporter() {
+Function(bool) useAutoReporter([BuildContext context]) {
   final isRunning = useSharedPrefs("usePeriodicBackgroundJob.isRunning", false);
   const id = 0;
   useEffect(() {
@@ -62,6 +63,11 @@ Function(bool) useAutoReporter() {
         wakeup: true,
         rescheduleOnReboot: true,
       );
+
+      if (context != null) {
+        Scaffold.of(context).showSnackBar(
+            SnackBar(content: Text('Time report scheduled for next Thursday')));
+      }
     } else if (!run && isRunning.value) {
       AndroidAlarmManager.cancel(id);
     }

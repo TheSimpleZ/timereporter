@@ -1,5 +1,5 @@
-name: timereporter
-description: A new Flutter project.
+name: Timereporter
+description: Automatic timereporting for Netlighters.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -30,6 +30,7 @@ dependencies:
   android_alarm_manager: '>=0.4.5+11 <2.0.0'
   functional_widget_annotation: ^0.5.1
   flutter_local_notifications: ^1.4.4+2
+  intl: ^0.16.1
   
 
 
@@ -43,6 +44,16 @@ dev_dependencies:
     sdk: flutter
   functional_widget: ^0.7.2
   build_runner: ^1.9.0
+  flutter_launcher_icons: "^0.7.3"
+  flutter_launcher_name: "^0.0.1"
+    
+flutter_launcher_name:
+  name: "Timereporter"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

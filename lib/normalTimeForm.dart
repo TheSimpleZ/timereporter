@@ -1,8 +1,8 @@
 // Define a custom Form widget.
 import 'package:flutter/material.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-import 'package:timereporter/hooks/useAutoReporter.dart';
-import 'package:timereporter/hooks/useSecureStorage.dart';
+import 'hooks/useAutoReporter.dart';
+import 'hooks/useSecureStorage.dart';
 import 'constants.dart';
 import 'hooks/usePersistentTextEditingController.dart';
 import 'secureFormTextField.dart';
@@ -18,7 +18,7 @@ Widget normalTimeForm(BuildContext context) {
   final _formKey = useMemoized(() => GlobalKey<FormState>());
   final autoTimeReport = useSharedPrefs(autoTimeReportKey, false);
   final timesheetIsReady = useSharedPrefs(timesheetIsReadyKey, false);
-  final autoReport = useAutoReporter();
+  final autoReport = useAutoReporter(context);
 
   final username =
       usePersistentTextEditingController(usernameKey, useSharedPrefs);

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="timereporter"
+        android:label="Timereporter"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
         android:fullBackupContent="false">
