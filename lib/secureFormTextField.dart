@@ -15,6 +15,7 @@ Widget secureTextFormField(
         keyBoardType,
         obscureText = false}) =>
     TextFormField(
+      autovalidate: false,
       controller: textController,
       // The validator receives the text that the user has entered.
       validator: (value) => value.isEmpty ? errorMessage : null,

@@ -4,9 +4,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build_runner watch",
+      "label": "Run code generator",
       "type": "shell",
-      "command": "flutter pub run build_runner watch",
+      "command": "flutter pub run build_runner watch --delete-conflicting-outputs",
       "runOptions": {
         "runOn": "folderOpen"
       },

@@ -1,84 +1,24 @@
 // Define a custom Form widget.
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timereporter/hooks/useAutoReporter.dart';
 import 'package:timereporter/hooks/useSecureStorage.dart';
-import 'package:timereporter/notifications.dart';
+import 'constants.dart';
 import 'hooks/usePersistentTextEditingController.dart';
 import 'secureFormTextField.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'hooks/useSharedPrefs.dart';
-import 'package:android_alarm_manager/android_alarm_manager.dart';
+
+import 'services/timereport-api.dart';
 
 part 'normalTimeForm.g.dart';
-
-const portName = "BackgroundSignal";
-
-const usernameKey = "username";
-const passwordKey = "password";
-const workOrderKey = "workOrder";
-const activityKey = "activity";
-const hoursPerDayKey = "hoursPerDay";
-const autoTimeReportKey = "autoTimeReport";
-const timesheetIsReadyKey = "timesheetIsReady";
-
-extension on DateTime {
-  DateTime next(int day) {
-    return this.add(
-      Duration(
-        days: (day - this.weekday) % DateTime.daysPerWeek,
-      ),
-    );
-  }
-}
-
-Future<http.Response> sendTimeReport(String username, String password,
-    String workOrder, String activity, String hoursPerDay, bool ready) async {
-  var url = 'https://timereporter-api.herokuapp.com/';
-  return http.post(url, body: {
-    'username': username,
-    'password': password,
-    'workOrder': workOrder,
-    'activity': activity,
-    'timeCode': 'Normal time',
-    'hoursPerDay': hoursPerDay,
-    'ready': ready.toString(),
-    'dryRun': "true"
-  });
-}
-
-Future<void> backgroundJob() async {
-  final sharedPrefs = await SharedPreferences.getInstance();
-
-  getItem(key) => jsonDecode(sharedPrefs.getString(key));
-
-  final username = getItem(usernameKey);
-  final workOrder = getItem(workOrderKey);
-  final activity = getItem(activityKey);
-  final hoursPerDay = getItem(hoursPerDayKey);
-  final timesheetIsReady = getItem(timesheetIsReadyKey);
-
-  final storage = FlutterSecureStorage();
-  final password = jsonDecode(await storage.read(key: passwordKey));
-
-  final response = await sendTimeReport(
-      username, password, workOrder, activity, hoursPerDay, timesheetIsReady);
-
-  if (response.statusCode == 200)
-    notify("Timereporter", "Successfully reported time for this week!");
-  else
-    notify("Timereporter", "Failed to report time for this week!");
-}
 
 @hwidget
 Widget normalTimeForm(BuildContext context) {
   final _formKey = useMemoized(() => GlobalKey<FormState>());
   final autoTimeReport = useSharedPrefs(autoTimeReportKey, false);
   final timesheetIsReady = useSharedPrefs(timesheetIsReadyKey, false);
+  final autoReport = useAutoReporter();
 
   final username =
       usePersistentTextEditingController(usernameKey, useSharedPrefs);
@@ -93,7 +33,7 @@ Widget normalTimeForm(BuildContext context) {
 
   sendTimeReportNow() async {
     if (_formKey.currentState.validate()) {
-      final response = await sendTimeReport(
+      final response = await sendNormalTimeReport(
           username.text,
           password.text,
           workOrder.text,
@@ -107,11 +47,6 @@ Widget normalTimeForm(BuildContext context) {
     }
   }
 
-  useEffect(() {
-    AndroidAlarmManager.initialize();
-    return null;
-  }, []);
-
   _clearData() async {
     _formKey.currentState.reset();
     username.text = "";
@@ -124,23 +59,7 @@ Widget normalTimeForm(BuildContext context) {
   }
 
   toggleAutoSwitch(newValue) async {
-    if (newValue) {
-      if (_formKey.currentState.validate()) {
-        final startTime = DateTime.now().next(DateTime.thursday);
-        AndroidAlarmManager.periodic(
-          const Duration(days: 7),
-          0,
-          backgroundJob,
-          startAt: startTime,
-          exact: true,
-          wakeup: true,
-          rescheduleOnReboot: true,
-        );
-      }
-    } else {
-      AndroidAlarmManager.cancel(0);
-    }
-
+    autoReport(newValue);
     autoTimeReport.value = newValue;
   }
 
