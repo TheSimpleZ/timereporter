@@ -14,7 +14,7 @@ void main() {
       primarySwatch: Colors.blue,
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    home: MyHomePage(title: 'Report time'),
+    home: MyHomePage(title: 'Report normal time'),
   ));
 }
 
@@ -25,20 +25,22 @@ Widget myHomePage(BuildContext context, {title}) {
     return null;
   }, []);
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(title),
-    ),
-    body: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[NormalTimeForm()],
+  return SafeArea(
+    child: Scaffold(
+      appBar: AppBar(
+        title: Text(title),
       ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[NormalTimeForm()],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {},
-      tooltip: 'Increment',
-      child: Icon(Icons.add),
-    ), // This trailing comma makes auto-formatting nicer for build methods.
   );
 }
