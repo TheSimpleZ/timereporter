@@ -8,7 +8,7 @@ class TimeSheetState {
 
   TimeSheetState(this.bussinessDays);
 
-  factory TimeSheetState.fromJson(Map<String, dynamic> json) =>
+  static TimeSheetState fromJson(Map<String, dynamic> json) =>
       _$TimeSheetStateFromJson(json);
   Map<String, dynamic> toJson() => _$TimeSheetStateToJson(this);
 }

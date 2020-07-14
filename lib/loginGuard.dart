@@ -6,7 +6,7 @@ import 'hooks/useSecureStorage.dart';
 import 'hooks/useSharedPrefs.dart';
 
 import 'constants.dart';
-import 'defaultSettingsForm.dart';
+import 'settingsForm.dart';
 import 'notifications.dart';
 import 'loginPage.dart';
 
@@ -14,7 +14,7 @@ part 'loginGuard.g.dart';
 
 const List<Widget> widgetOptions = <Widget>[
   ReportTimePage(),
-  DefaultSettingsForm(),
+  SettingsForm(),
 ];
 
 @hwidget
@@ -36,9 +36,7 @@ Widget loginGuard(BuildContext context) {
     appBar: AppBar(
       title: Text('Timereporter'),
     ),
-    body: SingleChildScrollView(
-      child: selectedPage,
-    ),
+    body: selectedPage,
     bottomNavigationBar: BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

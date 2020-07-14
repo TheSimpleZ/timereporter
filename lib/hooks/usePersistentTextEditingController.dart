@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-typedef ValueNotifier<T> StorageHook<T>(String key, {T initialValue, objType});
+import '../constants.dart';
+
+typedef ValueNotifier<T> StorageHook<T>(String key,
+    {T initialValue, Deserializer deserializer});
 
 TextEditingController usePersistentTextEditingController(
     String key, StorageHook useStorageHook,
-    {String initialValue, objType}) {
+    {String initialValue, deserializer}) {
   final result = useTextEditingController();
-  final storage =
-      useStorageHook(key, initialValue: initialValue, objType: initialValue);
+  final storage = useStorageHook(key,
+      initialValue: initialValue, deserializer: deserializer);
 
   useEffect(() {
     result.addListener(() {

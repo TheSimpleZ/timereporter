@@ -26,7 +26,8 @@ Widget loginPage(BuildContext context) {
   final password =
       usePersistentTextEditingController(passwordKey, useSecureStorage);
 
-  final timesheet = useSharedPrefs(timeSheetKey);
+  final timesheet =
+      useSharedPrefs(timeSheetKey, deserializer: TimeSheetState.fromJson);
 
   logIn() async {
     if (_formKey.currentState.validate()) {
