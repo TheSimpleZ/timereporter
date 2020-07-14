@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'secureFormTextField.dart';
+part of 'customTextFormField.dart';
 
 // **************************************************************************
 // FunctionalWidgetGenerator
 // **************************************************************************
 
-class SecureTextFormField extends HookWidget {
-  const SecureTextFormField(
+class CustomTextFormField extends HookWidget {
+  const CustomTextFormField(
       {Key key,
       this.textController,
       this.errorMessage,
@@ -33,7 +33,7 @@ class SecureTextFormField extends HookWidget {
   final dynamic obscureText;
 
   @override
-  Widget build(BuildContext _context) => secureTextFormField(
+  Widget build(BuildContext _context) => customTextFormField(
       textController: textController,
       errorMessage: errorMessage,
       icon: icon,

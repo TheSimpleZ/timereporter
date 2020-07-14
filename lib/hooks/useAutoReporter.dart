@@ -44,7 +44,8 @@ Future<void> backgroundJob() async {
 }
 
 Function(bool) useAutoReporter([BuildContext context]) {
-  final isRunning = useSharedPrefs("usePeriodicBackgroundJob.isRunning", false);
+  final isRunning =
+      useSharedPrefs("usePeriodicBackgroundJob.isRunning", initialValue: false);
   const id = 0;
   useEffect(() {
     AndroidAlarmManager.initialize();

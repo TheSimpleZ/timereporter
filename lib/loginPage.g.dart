@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'normalTimeForm.dart';
+part of 'loginPage.dart';
 
 // **************************************************************************
 // FunctionalWidgetGenerator
 // **************************************************************************
 
-class NormalTimeForm extends HookWidget {
-  const NormalTimeForm({Key key}) : super(key: key);
+class LoginPage extends HookWidget {
+  const LoginPage({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext _context) => normalTimeForm(_context);
+  Widget build(BuildContext _context) => loginPage(_context);
 }

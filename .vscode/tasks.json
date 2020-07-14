@@ -6,14 +6,18 @@
     {
       "label": "Run code generator",
       "type": "shell",
-      "command": "flutter pub run build_runner watch --delete-conflicting-outputs",
+      "command": "flutter pub run build_runner watch",
       "runOptions": {
         "runOn": "folderOpen"
       },
       "problemMatcher": [
         "$dart-pub-build_runner"
       ],
-      "isBackground": true
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

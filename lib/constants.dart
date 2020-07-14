@@ -5,3 +5,4 @@ const activityKey = "activity";
 const hoursPerDayKey = "hoursPerDay";
 const autoTimeReportKey = "autoTimeReport";
 const timesheetIsReadyKey = "timesheetIsReady";
+const timeSheetKey = "timeSheet";

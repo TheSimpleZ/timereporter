@@ -3,10 +3,10 @@ import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-part 'secureFormTextField.g.dart';
+part 'customTextFormField.g.dart';
 
 @hwidget
-Widget secureTextFormField(
+Widget customTextFormField(
         {textController,
         errorMessage,
         icon,

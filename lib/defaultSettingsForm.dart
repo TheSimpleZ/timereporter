@@ -1,29 +1,30 @@
 // Define a custom Form widget.
+import 'package:Timereporter/hooks/useSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'hooks/useAutoReporter.dart';
 import 'hooks/useSecureStorage.dart';
 import 'constants.dart';
 import 'hooks/usePersistentTextEditingController.dart';
-import 'secureFormTextField.dart';
+import 'customTextFormField.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'hooks/useSharedPrefs.dart';
 
 import 'services/timereport-api.dart';
 
-part 'normalTimeForm.g.dart';
+part 'defaultSettingsForm.g.dart';
 
 @hwidget
-Widget normalTimeForm(BuildContext context) {
+Widget defaultSettingsForm(BuildContext context) {
   final _formKey = useMemoized(() => GlobalKey<FormState>());
-  final autoTimeReport = useSharedPrefs(autoTimeReportKey, false);
-  final timesheetIsReady = useSharedPrefs(timesheetIsReadyKey, false);
+  final autoTimeReport = useSharedPrefs(autoTimeReportKey, initialValue: false);
+  final timesheetIsReady =
+      useSharedPrefs(timesheetIsReadyKey, initialValue: false);
   final autoReport = useAutoReporter(context);
+  final snackBar = useSnackBar(context);
 
-  final username =
-      usePersistentTextEditingController(usernameKey, useSharedPrefs);
-  final password =
-      usePersistentTextEditingController(passwordKey, useSecureStorage);
+  final username = useSharedPrefs(usernameKey);
+  final password = useSecureStorage(passwordKey);
   final workOrder =
       usePersistentTextEditingController(workOrderKey, useSharedPrefs);
   final activity =
@@ -34,23 +35,21 @@ Widget normalTimeForm(BuildContext context) {
   sendTimeReportNow() async {
     if (_formKey.currentState.validate()) {
       final response = await sendNormalTimeReport(
-          username.text,
-          password.text,
+          username.value,
+          password.value,
           workOrder.text,
           activity.text,
           hoursPerDay.text,
           timesheetIsReady.value);
       if (response.statusCode == 200)
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Success!')));
+        snackBar.showText('Success!');
       else
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Error!')));
+        snackBar.showText('Error!');
     }
   }
 
   _clearData() async {
     _formKey.currentState.reset();
-    username.text = "";
-    password.text = "";
     workOrder.text = "";
     activity.text = "";
     hoursPerDay.text = "";
@@ -70,24 +69,7 @@ Widget normalTimeForm(BuildContext context) {
           padding: const EdgeInsets.all(10),
           child: Column(children: <Widget>[
             // Add TextFormFields and RaisedButton here.
-            SecureTextFormField(
-              textController: username,
-              errorMessage: 'Please enter your email address',
-              hintText: 'Your short netlight email',
-              labelText: 'Netlight email',
-              icon: Icons.email,
-              keyBoardType: TextInputType.emailAddress,
-            ),
-            SecureTextFormField(
-              textController: password,
-              errorMessage: 'Please enter your password',
-              hintText: 'Your netlight password',
-              labelText: 'Netlight password',
-              icon: Icons.lock,
-              keyBoardType: TextInputType.emailAddress,
-              obscureText: true,
-            ),
-            SecureTextFormField(
+            CustomTextFormField(
               textController: workOrder,
               errorMessage: 'Please enter a Work order',
               hintText: 'The description text of a Work order',
@@ -95,7 +77,7 @@ Widget normalTimeForm(BuildContext context) {
               icon: Icons.work,
               keyBoardType: TextInputType.text,
             ),
-            SecureTextFormField(
+            CustomTextFormField(
               textController: activity,
               errorMessage: 'Please enter an Activity',
               hintText: 'The description text of an Activity',
@@ -103,7 +85,7 @@ Widget normalTimeForm(BuildContext context) {
               icon: Icons.local_activity,
               keyBoardType: TextInputType.text,
             ),
-            SecureTextFormField(
+            CustomTextFormField(
               textController: hoursPerDay,
               errorMessage: 'Please enter the amount of hours you work per day',
               hintText: 'The amount of hours you work per day',
@@ -128,12 +110,12 @@ Widget normalTimeForm(BuildContext context) {
               children: <Widget>[
                 RaisedButton(
                   onPressed: sendTimeReportNow,
-                  child: Text('Send timereport now'),
+                  child: Text('Send report now'),
                 ),
                 RaisedButton(
                   color: Colors.red,
                   onPressed: _clearData,
-                  child: Text('Clear form'),
+                  child: Text('Log out & clear form'),
                 )
               ],
             ),
