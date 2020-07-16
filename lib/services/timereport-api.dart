@@ -10,11 +10,11 @@ Future<http.Response> sendTimeReport(
     String hoursPerDay,
     bool ready,
     List<String> includeDays}) async {
-  var url = 'http://192.168.0.17:5000';
+  var url = 'https://timereporter-api.herokuapp.com';
+
+  final credentials = "$username:$password";
 
   final params = {
-    'username': username,
-    'password': password,
     'plan': plan,
     if (workOrder?.isNotEmpty == true) 'workOrder': workOrder,
     if (hoursPerDay?.isNotEmpty == true) 'hoursPerDay': hoursPerDay,
@@ -22,15 +22,18 @@ Future<http.Response> sendTimeReport(
     if (ready == true) 'ready': ready
   };
 
-  return http.post(url,
-      body: jsonEncode(params), headers: {'Content-type': 'application/json'});
+  return http.post(url, body: jsonEncode(params), headers: {
+    'Content-type': 'application/json',
+    'Authorization': base64.encode(utf8.encode(credentials))
+  });
 }
 
 Future<WeeklyData> getWeeklyData(String username, String password) async {
-  var uri = Uri.https("timereporter-api.herokuapp.com", '/',
-      {'username': username, 'password': password, 'dryRun': "true"});
+  final url = 'https://timereporter-api.herokuapp.com';
+  final credentials = "$username:$password";
 
-  final response = await http.get(uri);
+  final response = await http.get(url,
+      headers: {'Authorization': base64.encode(utf8.encode(credentials))});
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,

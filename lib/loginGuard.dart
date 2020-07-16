@@ -24,9 +24,10 @@ Widget loginGuard(BuildContext context) {
   final selectedIndex = useState(0);
   final bucket = useMemoized(() => PageStorageBucket());
 
-  final selectedPage = username.value.isEmpty || password.value.isEmpty
-      ? LoginPage()
-      : widgetOptions.elementAt(selectedIndex.value);
+  final isLoggedIn = username.value.isNotEmpty && password.value.isNotEmpty;
+
+  final selectedPage =
+      !isLoggedIn ? LoginPage() : widgetOptions.elementAt(selectedIndex.value);
 
   useEffect(() {
     initNotificationPlugin();
@@ -41,20 +42,22 @@ Widget loginGuard(BuildContext context) {
       child: selectedPage,
       bucket: bucket,
     ),
-    bottomNavigationBar: BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.assignment),
-          title: Text('Report time'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          title: Text('Settings'),
-        ),
-      ],
-      currentIndex: selectedIndex.value,
-      selectedItemColor: Colors.amber[800],
-      onTap: (index) => selectedIndex.value = index,
-    ),
+    bottomNavigationBar: isLoggedIn
+        ? BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.assignment),
+                title: Text('Report time'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                title: Text('Settings'),
+              ),
+            ],
+            currentIndex: selectedIndex.value,
+            selectedItemColor: Colors.amber[800],
+            onTap: (index) => selectedIndex.value = index,
+          )
+        : null,
   );
 }

@@ -15,7 +15,8 @@ class CustomTextFormField extends HookWidget {
       this.hintText,
       this.labelText,
       this.keyBoardType,
-      this.obscureText = false})
+      this.obscureText = false,
+      this.autocorrect = true})
       : super(key: key);
 
   final dynamic textController;
@@ -32,6 +33,8 @@ class CustomTextFormField extends HookWidget {
 
   final dynamic obscureText;
 
+  final dynamic autocorrect;
+
   @override
   Widget build(BuildContext _context) => customTextFormField(
       textController: textController,
@@ -40,7 +43,8 @@ class CustomTextFormField extends HookWidget {
       hintText: hintText,
       labelText: labelText,
       keyBoardType: keyBoardType,
-      obscureText: obscureText);
+      obscureText: obscureText,
+      autocorrect: autocorrect);
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -52,5 +56,6 @@ class CustomTextFormField extends HookWidget {
     properties.add(DiagnosticsProperty<dynamic>('labelText', labelText));
     properties.add(DiagnosticsProperty<dynamic>('keyBoardType', keyBoardType));
     properties.add(DiagnosticsProperty<dynamic>('obscureText', obscureText));
+    properties.add(DiagnosticsProperty<dynamic>('autocorrect', autocorrect));
   }
 }

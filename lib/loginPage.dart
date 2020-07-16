@@ -76,6 +76,7 @@ Widget loginPage(BuildContext context) {
               icon: Icons.lock,
               keyBoardType: TextInputType.emailAddress,
               obscureText: true,
+              autocorrect: false,
             ),
             RaisedButton(
               onPressed: loading.value ? null : logIn,

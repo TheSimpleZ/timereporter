@@ -13,8 +13,10 @@ Widget customTextFormField(
         hintText,
         labelText,
         keyBoardType,
-        obscureText = false}) =>
+        obscureText = false,
+        autocorrect = true}) =>
     TextFormField(
+      autocorrect: autocorrect,
       autovalidate: false,
       controller: textController,
       // The validator receives the text that the user has entered.
