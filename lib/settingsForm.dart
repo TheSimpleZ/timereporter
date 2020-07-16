@@ -76,6 +76,8 @@ Widget settingsForm(BuildContext context) {
                 onChanged: (newValue) {
                   workOrder.value = newValue;
                 },
+                validator: (value) =>
+                    value.isEmpty ? "Please choose a work order" : null,
                 items: workOrderList.value
                     .map((value) => DropdownMenuItem<String>(
                           value: value,
