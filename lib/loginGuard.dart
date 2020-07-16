@@ -19,9 +19,10 @@ const List<Widget> widgetOptions = <Widget>[
 
 @hwidget
 Widget loginGuard(BuildContext context) {
-  final username = useSharedPrefs(usernameKey, initialValue: "");
-  final password = useSecureStorage(passwordKey, initialValue: "");
+  final username = useSharedPrefs(StorageKeys.username, initialValue: "");
+  final password = useSecureStorage(StorageKeys.password, initialValue: "");
   final selectedIndex = useState(0);
+  final bucket = useMemoized(() => PageStorageBucket());
 
   final selectedPage = username.value.isEmpty || password.value.isEmpty
       ? LoginPage()
@@ -36,7 +37,10 @@ Widget loginGuard(BuildContext context) {
     appBar: AppBar(
       title: Text('Timereporter'),
     ),
-    body: selectedPage,
+    body: PageStorage(
+      child: selectedPage,
+      bucket: bucket,
+    ),
     bottomNavigationBar: BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

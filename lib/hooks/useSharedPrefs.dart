@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants.dart';
 
 ValueNotifier<T> useSharedPrefs<T>(String key,
-    {T initialValue, Deserializer deserializer}) {
+    {T initialValue, Deserializer<T> deserializer}) {
   final result = useState<T>(initialValue);
 
   getSecureValue() async {

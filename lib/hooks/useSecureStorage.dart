@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants.dart';
 
 ValueNotifier<T> useSecureStorage<T>(String key,
-    {T initialValue, Deserializer deserializer}) {
+    {T initialValue, Deserializer<T> deserializer}) {
   final result = useState<T>(initialValue);
 
   initValue() async {

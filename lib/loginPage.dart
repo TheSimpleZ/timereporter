@@ -1,5 +1,4 @@
-import 'package:Timereporter/hooks/useSnackBar.dart';
-import 'package:Timereporter/timeSheetState.dart';
+import 'hooks/useSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
@@ -22,21 +21,25 @@ Widget loginPage(BuildContext context) {
   final loading = useState(false);
 
   final username =
-      usePersistentTextEditingController(usernameKey, useSharedPrefs);
-  final password =
-      usePersistentTextEditingController(passwordKey, useSecureStorage);
+      usePersistentTextEditingController(StorageKeys.username, useSharedPrefs);
+  final password = usePersistentTextEditingController(
+      StorageKeys.password, useSecureStorage);
 
-  final timesheet =
-      useSharedPrefs(timeSheetKey, deserializer: TimeSheetState.fromJson);
+  final hoursPerDay = useSharedPrefs(StorageKeys.hoursPerDay);
+  final plans = useSharedPrefs(StorageKeys.plans);
+  final workOrderList = useSharedPrefs(StorageKeys.workOrderList);
 
   logIn() async {
     if (_formKey.currentState.validate()) {
       loading.value = true;
-      final days =
+      final data =
           await getWeeklyData(username.value.text, password.value.text);
       loading.value = false;
 
-      timesheet.value = TimeSheetState(days);
+      final days = data.businessDays;
+      hoursPerDay.value = data.hoursPerDay.toString();
+      plans.value = {for (var d in days) d: TimeCodes.normalTime};
+      workOrderList.value = data.workOrders;
 
       if (days?.isEmpty == false) {
         Navigator.pushReplacement(
