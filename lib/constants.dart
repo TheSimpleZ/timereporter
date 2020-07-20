@@ -1,6 +1,7 @@
 class StorageKeys {
   static const username = "username";
   static const password = "password";
+  static const isLoggedIn = "isLoggedIn";
   static const workOrder = "workOrder";
   static const activity = "activity";
   static const hoursPerDay = "hoursPerDay";

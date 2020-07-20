@@ -1,3 +1,5 @@
+import 'package:Timereporter/syncUtils.dart';
+
 import 'hooks/useSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -19,29 +21,22 @@ Widget loginPage(BuildContext context) {
   final _formKey = useMemoized(() => GlobalKey<FormState>());
   final snackBar = useSnackBar(context);
   final loading = useState(false);
+  final isLoggedIn =
+      useSecureStorage(StorageKeys.isLoggedIn, initialValue: false);
 
   final username = usePersistentTextEditingController(
       StorageKeys.username, useSecureStorage);
   final password = usePersistentTextEditingController(
       StorageKeys.password, useSecureStorage);
 
-  final hoursPerDay = useSharedPrefs(StorageKeys.hoursPerDay);
-  final plans = useSharedPrefs(StorageKeys.plans);
-  final workOrderList = useSharedPrefs(StorageKeys.workOrderList);
-
   logIn() async {
     if (_formKey.currentState.validate()) {
       loading.value = true;
-      final data =
-          await getWeeklyData(username.value.text, password.value.text);
+      final success = await syncWeeklyData();
       loading.value = false;
 
-      final days = data.businessDays;
-      hoursPerDay.value = data.hoursPerDay.toString();
-      plans.value = {for (var d in days) d: TimeCodes.normalTime};
-      workOrderList.value = data.workOrders;
-
-      if (days?.isEmpty == false) {
+      if (success) {
+        isLoggedIn.value = true;
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginGuard()));
       } else {
@@ -74,7 +69,6 @@ Widget loginPage(BuildContext context) {
               hintText: 'Your netlight password',
               labelText: 'Netlight password',
               icon: Icons.lock,
-              keyBoardType: TextInputType.emailAddress,
               obscureText: true,
               autocorrect: false,
             ),

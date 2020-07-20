@@ -16,7 +16,7 @@ initNotificationPlugin() async {
 }
 
 Future notify(String message, String description) async {
-  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'timereporter', 'Time report', 'Notifications regarding time reporting',
       importance: Importance.High, priority: Priority.High);
 
@@ -30,6 +30,5 @@ Future notify(String message, String description) async {
     message,
     description,
     platformChannelSpecifics,
-    payload: 'Default_Sound',
   );
 }

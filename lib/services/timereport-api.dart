@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:Timereporter/services/models/WeeklyData.dart';
 import 'package:http/http.dart' as http;
 
+const url = 'https://timereporter-api.herokuapp.com';
+
 Future<http.Response> sendTimeReport(
     String username, String password, Map<String, dynamic> plan,
     {String workOrder,
@@ -10,8 +12,6 @@ Future<http.Response> sendTimeReport(
     String hoursPerDay,
     bool ready,
     List<String> includeDays}) async {
-  var url = 'https://timereporter-api.herokuapp.com';
-
   final credentials = "$username:$password";
 
   final params = {
@@ -22,20 +22,27 @@ Future<http.Response> sendTimeReport(
     if (ready == true) 'ready': ready
   };
 
-  return http.post(url, body: jsonEncode(params), headers: {
-    'Content-type': 'application/json',
-    'Authorization': base64.encode(utf8.encode(credentials))
-  });
+  try {
+    return http.post(url, body: jsonEncode(params), headers: {
+      'Content-type': 'application/json',
+      'Authorization': base64.encode(utf8.encode(credentials))
+    });
+  } on http.ClientException {
+    return null;
+  }
 }
 
 Future<WeeklyData> getWeeklyData(String username, String password) async {
-  final url = 'https://timereporter-api.herokuapp.com';
   final credentials = "$username:$password";
 
-  final response = await http.get(url,
-      headers: {'Authorization': base64.encode(utf8.encode(credentials))});
-
-  if (response.statusCode == 200) {
+  http.Response response;
+  try {
+    response = await http.get(url,
+        headers: {'Authorization': base64.encode(utf8.encode(credentials))});
+  } on http.ClientException {
+    return null;
+  }
+  if (response?.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     return WeeklyData.fromJson(json.decode(response.body));

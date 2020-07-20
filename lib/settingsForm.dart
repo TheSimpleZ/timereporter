@@ -3,6 +3,7 @@ import 'package:Timereporter/hooks/useSnackBar.dart';
 import 'package:Timereporter/loginGuard.dart';
 import 'package:flutter/material.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:intl/intl.dart';
 import 'hooks/useAutoReporter.dart';
 import 'hooks/useSecureStorage.dart';
 import 'constants.dart';
@@ -24,6 +25,8 @@ Widget settingsForm(BuildContext context) {
 
   final username = useSecureStorage(StorageKeys.username);
   final password = useSecureStorage(StorageKeys.password);
+  final isLoggedIn =
+      useSecureStorage(StorageKeys.isLoggedIn, initialValue: false);
   final workOrder =
       useSharedPrefs<String>(StorageKeys.workOrder, initialValue: null);
 
@@ -46,7 +49,7 @@ Widget settingsForm(BuildContext context) {
     }
   }
 
-  _clearData() async {
+  _clearDataAndLogout() async {
     // Clear form
     _formKey.currentState.reset();
     workOrder.value = null;
@@ -58,6 +61,8 @@ Widget settingsForm(BuildContext context) {
     // // Logout
     username.value = "";
     password.value = "";
+    isLoggedIn.value = false;
+
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LoginGuard()));
   }
@@ -102,7 +107,10 @@ Widget settingsForm(BuildContext context) {
                 onChanged: (newVal) => ready.value = newVal,
               ),
               SwitchListTile(
-                title: const Text('Auto time report'),
+                title: const Text("Auto report"),
+                subtitle: autoReporter.nextRun != null
+                    ? Text("Next run: ${autoReporter.nextRun}")
+                    : null,
                 secondary: const Icon(Icons.autorenew),
                 value: autoTimeReport.value,
                 onChanged: toggleAutoSwitch,
@@ -116,7 +124,7 @@ Widget settingsForm(BuildContext context) {
                   ),
                   RaisedButton(
                     color: Colors.red,
-                    onPressed: _clearData,
+                    onPressed: _clearDataAndLogout,
                     child: Text('Log out & clear form'),
                   )
                 ],

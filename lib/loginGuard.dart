@@ -18,13 +18,11 @@ const List<Widget> widgetOptions = <Widget>[
 
 @hwidget
 Widget loginGuard(BuildContext context) {
-  final username = useSecureStorage(StorageKeys.username, initialValue: "");
-  final password = useSecureStorage(StorageKeys.password, initialValue: "");
+  final isLoggedIn =
+      useSecureStorage(StorageKeys.isLoggedIn, initialValue: false);
   final selectedIndex = useState(0);
 
-  final isLoggedIn = username.value.isNotEmpty && password.value.isNotEmpty;
-
-  final selectedPage = !isLoggedIn
+  final selectedPage = !isLoggedIn.value
       ? LoginPage()
       : IndexedStack(
           index: selectedIndex.value,
@@ -41,7 +39,7 @@ Widget loginGuard(BuildContext context) {
       title: Text('Timereporter'),
     ),
     body: selectedPage,
-    bottomNavigationBar: isLoggedIn
+    bottomNavigationBar: isLoggedIn.value
         ? BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
