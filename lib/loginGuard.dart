@@ -22,12 +22,15 @@ Widget loginGuard(BuildContext context) {
   final username = useSharedPrefs(StorageKeys.username, initialValue: "");
   final password = useSecureStorage(StorageKeys.password, initialValue: "");
   final selectedIndex = useState(0);
-  final bucket = useMemoized(() => PageStorageBucket());
 
   final isLoggedIn = username.value.isNotEmpty && password.value.isNotEmpty;
 
-  final selectedPage =
-      !isLoggedIn ? LoginPage() : widgetOptions.elementAt(selectedIndex.value);
+  final selectedPage = !isLoggedIn
+      ? LoginPage()
+      : IndexedStack(
+          index: selectedIndex.value,
+          children: widgetOptions,
+        );
 
   useEffect(() {
     initNotificationPlugin();
@@ -38,10 +41,7 @@ Widget loginGuard(BuildContext context) {
     appBar: AppBar(
       title: Text('Timereporter'),
     ),
-    body: PageStorage(
-      child: selectedPage,
-      bucket: bucket,
-    ),
+    body: selectedPage,
     bottomNavigationBar: isLoggedIn
         ? BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
