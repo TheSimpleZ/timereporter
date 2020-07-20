@@ -3,7 +3,6 @@ import 'package:Timereporter/hooks/useSnackBar.dart';
 import 'package:Timereporter/loginGuard.dart';
 import 'package:flutter/material.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
-import 'package:intl/intl.dart';
 import 'hooks/useAutoReporter.dart';
 import 'hooks/useSecureStorage.dart';
 import 'constants.dart';
