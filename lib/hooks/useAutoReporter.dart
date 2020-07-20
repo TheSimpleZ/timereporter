@@ -23,44 +23,61 @@ extension on DateTime {
 
 // Fetch everything from storage using native methods because we cannot access hooks here
 Future<void> backgroundJob() async {
-  print("Background job started");
+  debugPrint("Background job started");
   final sharedPrefs = await SharedPreferences.getInstance();
+  final secureStorage = FlutterSecureStorage();
 
   T getItem<T>(key) {
     final item = sharedPrefs.getString(key);
     return item == null ? null : jsonDecode(item);
   }
 
-  final username = getItem(StorageKeys.username);
+  Future<T> getSecureItem<T>(key) async {
+    final item = await secureStorage.read(key: StorageKeys.username);
+    return item == null ? null : jsonDecode(item);
+  }
+
+  Future<bool> setItem<T>(key, value) {
+    final val = jsonEncode(value);
+    return sharedPrefs.setString(key, val);
+  }
+
   final workOrder = getItem(StorageKeys.workOrder);
   final hoursPerDay = getItem(StorageKeys.hoursPerDay);
   final ready = getItem(StorageKeys.ready);
 
-  final storage = FlutterSecureStorage();
-  final password = jsonDecode(await storage.read(key: StorageKeys.password));
+  final username = await getSecureItem(StorageKeys.username);
+  final password = await getSecureItem(StorageKeys.password);
 
   final plans = getItem<Map<String, dynamic>>(StorageKeys.plans);
 
   final response = await sendTimeReport(username, password, plans,
       workOrder: workOrder, hoursPerDay: hoursPerDay, ready: ready);
 
-  if (response.statusCode == 200)
+  if (response.statusCode == 200) {
     notify("Timereporter", "Successfully reported time for this week!");
-  else
+
+    // Set next run to next thursday
+    await setItem(
+        "useAutoReporter.nextRun", DateTime.now().add(Duration(days: 7)));
+  } else {
     notify("Timereporter", "Failed to report time for this week!");
+  }
 }
 
 class AutoReporter {
+  final DateTime nextRun;
   final Function(bool) setAutoReport;
   final Function() sendNow;
 
-  AutoReporter(this.setAutoReport, this.sendNow);
+  AutoReporter(this.setAutoReport, this.sendNow, this.nextRun);
 }
 
 bool isInitialized = false;
 AutoReporter useAutoReporter([BuildContext context]) {
   final isRunning =
-      useSharedPrefs("usePeriodicBackgroundJob.isRunning", initialValue: false);
+      useSharedPrefs("useAutoReporter.isRunning", initialValue: false);
+  final nextRun = useSharedPrefs("useAutoReporter.nextRun");
 
   const id = 0;
   useEffect(() {
@@ -83,17 +100,12 @@ AutoReporter useAutoReporter([BuildContext context]) {
         wakeup: true,
         rescheduleOnReboot: true,
       );
-      print("Periodic alarm set");
+      debugPrint("Periodic alarm set");
       isRunning.value = true;
-      if (context != null) {
-        final DateFormat formatter = DateFormat('EEEE dd/MM');
-        final String formatted = formatter.format(startTime);
-        Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text('Time report scheduled for $formatted')));
-      }
+      nextRun.value = startTime;
     } else if (!run && isRunning.value) {
       AndroidAlarmManager.cancel(id);
-      print("Periodic alarm canceled");
+      debugPrint("Periodic alarm canceled");
       isRunning.value = false;
     }
   }
@@ -108,8 +120,8 @@ AutoReporter useAutoReporter([BuildContext context]) {
         rescheduleOnReboot: true,
       );
 
-  final autoreporter =
-      useMemoized(() => AutoReporter(autoReport, sendNow), [isRunning]);
+  final autoreporter = useMemoized(
+      () => AutoReporter(autoReport, sendNow, nextRun.value), [isRunning]);
 
   return autoreporter;
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'hooks/useSecureStorage.dart';
-import 'hooks/useSharedPrefs.dart';
 
 import 'constants.dart';
 import 'settingsForm.dart';
@@ -19,7 +18,7 @@ const List<Widget> widgetOptions = <Widget>[
 
 @hwidget
 Widget loginGuard(BuildContext context) {
-  final username = useSharedPrefs(StorageKeys.username, initialValue: "");
+  final username = useSecureStorage(StorageKeys.username, initialValue: "");
   final password = useSecureStorage(StorageKeys.password, initialValue: "");
   final selectedIndex = useState(0);
 

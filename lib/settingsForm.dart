@@ -22,7 +22,7 @@ Widget settingsForm(BuildContext context) {
   final autoReporter = useAutoReporter(context);
   final snackBar = useSnackBar(context);
 
-  final username = useSharedPrefs(StorageKeys.username);
+  final username = useSecureStorage(StorageKeys.username);
   final password = useSecureStorage(StorageKeys.password);
   final workOrder =
       useSharedPrefs<String>(StorageKeys.workOrder, initialValue: null);
@@ -33,10 +33,16 @@ Widget settingsForm(BuildContext context) {
   final hoursPerDay = usePersistentTextEditingController(
       StorageKeys.hoursPerDay, useSharedPrefs);
 
+  toggleAutoSwitch(newValue) async {
+    autoReporter.setAutoReport(newValue);
+    autoTimeReport.value = newValue;
+  }
+
   sendTimeReportNow() async {
     if (_formKey.currentState.validate()) {
       await autoReporter.sendNow();
-      snackBar.showText('Timesheet will be sent ASAP');
+      toggleAutoSwitch(false);
+      snackBar.showText('Timesheet will be sent soon.');
     }
   }
 
@@ -54,11 +60,6 @@ Widget settingsForm(BuildContext context) {
     password.value = "";
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LoginGuard()));
-  }
-
-  toggleAutoSwitch(newValue) async {
-    autoReporter.setAutoReport(newValue);
-    autoTimeReport.value = newValue;
   }
 
   // Build a Form widget using the _formKey created above.

@@ -20,8 +20,8 @@ Widget loginPage(BuildContext context) {
   final snackBar = useSnackBar(context);
   final loading = useState(false);
 
-  final username =
-      usePersistentTextEditingController(StorageKeys.username, useSharedPrefs);
+  final username = usePersistentTextEditingController(
+      StorageKeys.username, useSecureStorage);
   final password = usePersistentTextEditingController(
       StorageKeys.password, useSecureStorage);
 
