@@ -16,6 +16,19 @@ Keep in mind that the backend is using a bot (web scraping) to click through the
 
 <img src="screenshots/login.png" width="200"> <img src="screenshots/reportTime.png" width="200"> <img src="screenshots/settings.png" width="200">
 
+## How to install
+
+Download the latest version of a file called `timereporter.apk` from [the GitHub releases page](https://github.com/TheSimpleZ/timereporter/releases/). 
+
+Make sure you are using your phone, alternativley, move the APK file from your computer to your phone using a usb cable, bluetooth, etc.
+
+Make sure you've allowed your phone to [install apps from unknown sources](https://android.gadgethacks.com/how-to/android-101-sideload-apps-by-enabling-unknown-sources-install-unknown-apps-0161947/). On more recent android version you'll be asked for the permission when you open the APK file.
+
+Now open the APK file and follow the installation instructions. 
+
+**Note:** Since this app is still in beta, you might get a prompt telling you that the app comes from an unknown developer. Simply press the "Install anyway" button to proceed with the installation. 
+
+<img src="https://i.stack.imgur.com/LlLiX.png" width="200">
 
 
 
