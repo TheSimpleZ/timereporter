@@ -14,9 +14,7 @@ All your credentials are stored & encrypted locally. They will only be sent to t
 Keep in mind that the backend is using a bot (web scraping) to click through the usual timereport UI for you. Hence, all operations are slow and can take time. However, you may safely close the app without interrupting any processes. 
 
 
-<img src="screenshots/login.png" width="200">
-<img src="screenshots/reportTime.png" width="200">
-<img src="screenshots/settings.png" width="200">
+<img src="screenshots/login.png" width="200"> <img src="screenshots/reportTime.png" width="200"> <img src="screenshots/settings.png" width="200">
 
 
 
