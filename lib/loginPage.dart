@@ -30,7 +30,7 @@ Widget loginPage(BuildContext context) {
   logIn() async {
     if (_formKey.currentState.validate()) {
       loading.value = true;
-      final success = await syncWeeklyData();
+      final success = await getTimesheetData();
       loading.value = false;
 
       if (success) {

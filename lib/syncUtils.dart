@@ -31,7 +31,7 @@ class LocalStorage {
 }
 
 // Sync weekly data from unit4 to local storage
-Future<bool> syncWeeklyData() async {
+Future<bool> getTimesheetData() async {
   final storage = LocalStorage();
   final username = await storage.getSecureItem(StorageKeys.username);
   final password = await storage.getSecureItem(StorageKeys.password);
@@ -52,7 +52,7 @@ Future<bool> syncWeeklyData() async {
 }
 
 // Fetch everything from storage using native methods because we cannot access hooks here
-Future<void> backgroundJob() async {
+Future<void> setTimesheet() async {
   debugPrint("Background job started");
   final storage = LocalStorage();
 
@@ -79,7 +79,7 @@ Future<void> backgroundJob() async {
           "useAutoReporter.nextRun", formatter.format(nextRun));
     }
 
-    final success = await syncWeeklyData();
+    final success = await getTimesheetData();
 
     if (success) {
       notify("Timereporter",

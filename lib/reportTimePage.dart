@@ -66,12 +66,14 @@ Widget reportTimePage(BuildContext context) {
   // Build a Form widget using the _formKey created above.
   return SmartRefresher(
     controller: _refreshController,
+    header: WaterDropMaterialHeader(),
     onRefresh: () async {
-      final success = await syncWeeklyData();
-      if (success)
+      final success = await getTimesheetData();
+      if (success) {
         _refreshController.refreshCompleted();
-      else
+      } else {
         _refreshController.refreshFailed();
+      }
     },
     child: ListView.builder(
         padding: const EdgeInsets.all(8),

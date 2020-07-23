@@ -26,11 +26,13 @@ TextEditingController usePersistentTextEditingController(
     // Get from storage once
     rehydrate() {
       result.text = storage.value;
-      storage.removeListener(rehydrate);
     }
 
     storage.addListener(rehydrate);
-    return () => result.removeListener(writeToStorage);
+    return () {
+      storage.removeListener(rehydrate);
+      result.removeListener(writeToStorage);
+    };
   }, []);
 
   return result;

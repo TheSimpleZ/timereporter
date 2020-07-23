@@ -44,7 +44,7 @@ AutoReporter useAutoReporter([BuildContext context]) {
       AndroidAlarmManager.periodic(
         const Duration(days: 7),
         id,
-        backgroundJob,
+        setTimesheet,
         startAt: startTime,
         exact: true,
         wakeup: true,
@@ -65,7 +65,7 @@ AutoReporter useAutoReporter([BuildContext context]) {
   sendNow() => AndroidAlarmManager.oneShot(
         Duration.zero,
         id,
-        backgroundJob,
+        setTimesheet,
         allowWhileIdle: true,
         exact: true,
         wakeup: true,
