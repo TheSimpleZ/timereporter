@@ -1,3 +1,4 @@
+import 'package:Timereporter/constants.dart';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -28,6 +29,7 @@ AutoReporter useAutoReporter([BuildContext context]) {
   final isRunning =
       useSharedPrefs("useAutoReporter.isRunning", initialValue: false);
   final nextRun = useSharedPrefs("useAutoReporter.nextRun");
+  final plans = useSharedPrefs(StorageKeys.plans);
 
   const id = 0;
   useEffect(() {
@@ -40,7 +42,18 @@ AutoReporter useAutoReporter([BuildContext context]) {
 
   autoReport(bool run) {
     if (run && !isRunning.value) {
-      final startTime = DateTime.now().next(DateTime.thursday);
+      final startOfWeek = plans.value.keys.toList()[0];
+      final DateFormat parseFormatter = DateFormat('EEE M/d');
+      final parsedDate = parseFormatter.parse(startOfWeek);
+      final now = DateTime.now();
+      final startTime = DateTime(
+        now.year,
+        parsedDate.month,
+        parsedDate.day,
+        now.hour,
+        now.minute,
+      ).next(DateTime.thursday);
+
       AndroidAlarmManager.periodic(
         const Duration(days: 7),
         id,
